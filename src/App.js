@@ -1,21 +1,27 @@
 import Movies from './components/Movies';
 import { useState, useEffect } from 'react';
 import { APIKEY } from './env.js';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchData } from  './actions'
 
 import './App.scss';
 
 function App() {
-  const [movies, setMovies] = useState([]);
+  // const [movies, setMovies] = useState([]);
   const [searchField, setSearchField] = useState('');
   const URL = `https://www.omdbapi.com/?s=${searchField}&apikey=${APIKEY}`;
+  const movies = useSelector(state => state.movies);
+  const dispatch = useDispatch();
 
   function getMovies() {
-    fetch(encodeURI(URL))
-      .then(res => res.json())
-      .then(movies => setMovies(movies.Search))
+  //   fetch(encodeURI(URL))
+  //     .then(res => res.json())
+  //     .then(movies => setMovies(movies.Search))
+  // }
+    dispatch (fetchData(URL))
   }
 
-  useEffect(getMovies, []);
+  useEffect(getMovies, [dispatch]);
   useEffect(getMovies, [searchField]);
   
   let timer;
@@ -30,7 +36,7 @@ function App() {
   return (
     <div className="App">
       <input type="text" onChange={handleChange} />
-      <Movies movies={movies} />
+      <Movies movies={movies.movies} />
     </div>
   );
 }
